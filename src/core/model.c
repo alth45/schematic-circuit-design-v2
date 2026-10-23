@@ -18,6 +18,9 @@
 #include "model.h"
 #include "sim.h"
 
+#include<stdio.h>
+
+
 /* ===================== State Global ===================== */
 Component comps[MAX_COMP];
 int comp_count = 0;
@@ -616,40 +619,38 @@ void model_translate_selection(int dx, int dy) {
 }
 
 int model_delete_selection(void) {
-  if (sim_running)
-    return 0;
-  if (sel_count == 0)
-    return 0;
+    if (sim_running) return 0;
+    if (sel_count == 0) return 0;
 
-  undo_begin_batch();
-  undo_push(); /* snapshot awal */
+    undo_begin_batch();
+    undo_push();   /* snapshot awal */
 
-  int removed = 0;
-  while (sel_count > 0) {
-    Component *c = find_comp_by_id(selection[0]);
-    if (!c) {
-      for (int j = 0; j < sel_count - 1; j++)
-        selection[j] = selection[j + 1];
-      sel_count--;
-      continue;
+    /* Hitung removed dari delta comp_count — bukan dari mutasi selection[],
+       karena model_remove_at() sudah menghapus item dari selection[] secara
+       internal. Loop lama salah menghitung (selalu 0). */
+    int count_before = comp_count;
+
+    while (sel_count > 0) {
+        Component *c = find_comp_by_id(selection[0]);
+        if (!c) {
+            /* Item stale — buang dari selection[] tanpa hitung removed
+               (memang sudah tidak ada di comps[]). */
+            for (int j = 0; j < sel_count - 1; j++)
+                selection[j] = selection[j + 1];
+            sel_count--;
+            continue;
+        }
+        int cx = c->x, cy = c->y;
+        model_remove_at(cx, cy);
     }
-    int cx = c->x, cy = c->y;
-    model_remove_at(cx, cy);
-    for (int j = 0; j < sel_count;) {
-      if (!find_comp_by_id(selection[j])) {
-        for (int k = j; k < sel_count - 1; k++)
-          selection[k] = selection[k + 1];
-        sel_count--;
-        removed++;
-      } else
-        j++;
-    }
-  }
-  sel_count = 0;
-  selected_id = -1;
-  sim_recompute();
-  undo_end_batch();
-  return removed;
+
+    int removed = count_before - comp_count;
+
+    sel_count = 0;
+    selected_id = -1;
+    sim_recompute();
+    undo_end_batch();
+    return removed;
 }
 
 int model_duplicate_selection(int dx, int dy) {
@@ -1287,63 +1288,67 @@ int model_remove_wire_at(int x, int y) {
  */
 #ifdef SCHEMATIC_TEST_STUBS
 void test_reset_model(void) {
-  /* Data model */
-  comp_count = 0;
-  wire_count = 0;
-  junction_count = 0;
-  next_id = 1;
-  for (int i = 0; i < MAX_COMP; i++) {
-    comps[i].type = COMP_NONE;
-    comps[i].x = comps[i].y = 0;
-    comps[i].id = 0;
-    comps[i].rot = 0;
-    comps[i].on = 0;
-    comps[i].v = 0.0;
-    comps[i].wave = WAVE_SINE;
-    comps[i].led_color = 0;
-  }
-  for (int i = 0; i < MAX_JUNCTIONS; i++) {
-    junctions[i].x = junctions[i].y = 0;
-    junctions[i].used = 0;
-  }
-  for (int i = 0; i < MAX_WIRES; i++) {
-    wires[i].a.comp_id = -1;
-    wires[i].a.pin_idx = -1;
-    wires[i].b.comp_id = -1;
-    wires[i].b.pin_idx = -1;
-  }
+    /* ---- Data model (yang paling penting — reset counter & array) ---- */
+    fprintf(stderr, "[DBG] test_reset_model: comp_count_before=%d\n", comp_count);
+    comp_count     = 0;
+    wire_count     = 0;
+    junction_count = 0;
+    next_id        = 1;
 
-  /* Interaksi */
-  current_tool = TOOL_SELECT;
-  selected_id = -1;
-  dragging_id = -1;
-  drag_dx = drag_dy = 0;
-  sel_count = 0;
-  for (int i = 0; i < MAX_SEL; i++)
-    selection[i] = 0;
-  box_selecting = 0;
-  box_x1 = box_y1 = box_x2 = box_y2 = 0;
-  group_dragging = 0;
-  group_drag_n = 0;
-  group_drag_ox = group_drag_oy = 0;
-  wiring_active = 0;
-  wiring_from.comp_id = -1;
-  wiring_from.pin_idx = -1;
-  wiring_mx = wiring_my = 0;
+    for (int i = 0; i < MAX_COMP; i++) {
+        comps[i].type      = COMP_NONE;
+        comps[i].x         = 0;
+        comps[i].y         = 0;
+        comps[i].id        = 0;
+        comps[i].rot       = 0;
+        comps[i].on        = 0;
+        comps[i].v         = 0.0;
+        comps[i].wave      = WAVE_SINE;
+        comps[i].led_color = 0;
+    }
+    for (int i = 0; i < MAX_JUNCTIONS; i++) {
+        junctions[i].x    = 0;
+        junctions[i].y    = 0;
+        junctions[i].used = 0;
+    }
+    for (int i = 0; i < MAX_WIRES; i++) {
+        wires[i].a.comp_id = -1;  wires[i].a.pin_idx = -1;
+        wires[i].b.comp_id = -1;  wires[i].b.pin_idx = -1;
+    }
 
-  /* Undo/redo */
-  undo_top = 0;
-  redo_top = 0;
-  undo_batch = 0;
-  undo_batch_pushed = 0;
+    /* ---- Interaksi ---- */
+    current_tool   = TOOL_SELECT;
+    selected_id    = -1;
+    dragging_id    = -1;
+    drag_dx        = 0;
+    drag_dy        = 0;
+    sel_count      = 0;
+    for (int i = 0; i < MAX_SEL; i++) selection[i] = 0;
+    box_selecting  = 0;
+    box_x1 = box_y1 = box_x2 = box_y2 = 0;
+    group_dragging = 0;
+    group_drag_n   = 0;
+    group_drag_ox  = 0;
+    group_drag_oy  = 0;
+    wiring_active  = 0;
+    wiring_from.comp_id = -1;
+    wiring_from.pin_idx = -1;
+    wiring_mx      = 0;
+    wiring_my      = 0;
 
-  /* Viewport */
-  g_zoom = 1.0;
-  g_pan_x = 0;
-  g_pan_y = 0;
-  g_show_grid = 1;
-  g_show_status = 1;
-  g_show_minimap = 1;
-  g_minimap_mode = 0;
+    /* ---- Undo/redo (static file-scope di model.c — aman diakses) ---- */
+    undo_top          = 0;
+    redo_top          = 0;
+    undo_batch        = 0;
+    undo_batch_pushed = 0;
+
+    /* ---- Viewport ---- */
+    g_zoom         = 1.0;
+    g_pan_x        = 0;
+    g_pan_y        = 0;
+    g_show_grid    = 1;
+    g_show_status  = 1;
+    g_show_minimap = 1;
+    g_minimap_mode = 0;
 }
 #endif /* SCHEMATIC_TEST_STUBS */

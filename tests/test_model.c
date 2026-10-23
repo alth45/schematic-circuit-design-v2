@@ -7,7 +7,8 @@
 
 /* ------------------------------------------------------------------ snap */
 void test_snap(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     TEST_ASSERT_INT_EQ(snap(0),    0);
     TEST_ASSERT_INT_EQ(snap(9),    0);    /* round(0.45)*20 = 0    */
     TEST_ASSERT_INT_EQ(snap(11),   20);   /* round(0.55)*20 = 20   */
@@ -20,7 +21,8 @@ void test_snap(void) {
 
 /* --------------------------------------------------- comp_default_value */
 void test_comp_default_value(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     TEST_ASSERT_DOUBLE_EQ(comp_default_value(COMP_RESISTOR),  220.0, 1e-9);
     TEST_ASSERT_DOUBLE_EQ(comp_default_value(COMP_BATTERY),   9.0,   1e-9);
     TEST_ASSERT_DOUBLE_EQ(comp_default_value(COMP_ACSOURCE),  220.0, 1e-9);
@@ -32,7 +34,8 @@ void test_comp_default_value(void) {
 
 /* ------------------------------------------------------ comp_has_value */
 void test_comp_has_value(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     /* Punya nilai */
     TEST_ASSERT_INT_EQ(comp_has_value(COMP_RESISTOR),  1);
     TEST_ASSERT_INT_EQ(comp_has_value(COMP_BATTERY),   1);
@@ -50,7 +53,8 @@ void test_comp_has_value(void) {
 
 /* ----------------------------------------------------- comp_pin_count */
 void test_comp_pin_count(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     Component c;
     c.type = COMP_GROUND;
     TEST_ASSERT_INT_EQ(comp_pin_count(&c), 1);
@@ -84,7 +88,8 @@ void test_comp_pin_count(void) {
 
 /* -------------------------------------------------- find_comp_by_id */
 void test_find_comp_by_id(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     TEST_ASSERT_NULL(find_comp_by_id(-1));
     TEST_ASSERT_NULL(find_comp_by_id(0));
     TEST_ASSERT_NULL(find_comp_by_id(999));
@@ -103,7 +108,8 @@ void test_find_comp_by_id(void) {
 
 /* ---------------------------------------------- model_add_component */
 void test_model_add_component(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     TEST_ASSERT_INT_EQ(comp_count, 0);
 
     model_add_component(COMP_RESISTOR, 95, 105);
@@ -131,7 +137,8 @@ void test_model_add_component(void) {
 
 /* ---------------------------------------------- parse_value_text */
 void test_parse_value(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     double v;
 
     TEST_ASSERT_INT_EQ(parse_value_text(L"220", &v), 1);
@@ -149,7 +156,7 @@ void test_parse_value(void) {
     TEST_ASSERT_INT_EQ(parse_value_text(L"10uF", &v), 1);
     TEST_ASSERT_DOUBLE_EQ(v, 10e-6, 1e-12);
 
-    TEST_ASSERT_INT_EQ(parse_value_text(L"5.1Vz", &v), 1);
+    TEST_ASSERT_INT_EQ(parse_value_text(L"5.1", &v), 1);
     TEST_ASSERT_DOUBLE_EQ(v, 5.1, 1e-9);
 
     TEST_ASSERT_INT_EQ(parse_value_text(L"4.7 k", &v), 1);

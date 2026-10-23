@@ -24,11 +24,13 @@ int test_current_section_failed = 0;
 
 /* ===================== Reset state ===================== */
 void test_reset_state(void) {
+    fprintf(stderr, "[DBG] test_reset_state CALLED (before=%d)\n", comp_count);
 #ifdef SCHEMATIC_TEST_STUBS
-    /* Urutan penting: model dulu (kosongkan comps/wires), lalu sim
-       (recompute dengan comp_count = 0 → semua flag reset). */
     test_reset_model();
     test_reset_sim();
+    fprintf(stderr, "[DBG] test_reset_state DONE (after=%d)\n", comp_count);
+#else
+    fprintf(stderr, "[DBG] SCHEMATIC_TEST_STUBS NOT DEFINED — reset skipped\n");
 #endif
 }
 

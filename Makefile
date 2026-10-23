@@ -113,14 +113,23 @@ test: $(TEST_BIN)
 #  Bersih-bersih
 # ============================================================================
 ifeq ($(OS),Windows_NT)
+# clean:
+# 	-del /Q $(APP) $(TEST_BIN) 2>NUL
+# 	-del /Q *.o 2>NUL
+# 	-del /Q src\core\*.o src\io\*.o src\audio\*.o 2>NUL
+# 	-del /Q src\ui\*.o src\ui\canvas\*.o src\ui\toolbar\*.o 2>NUL
+# 	-del /Q src\ui\panels\*.o src\ui\dialogs\*.o 2>NUL
+# 	-del /Q src\components\*.o tests\*.o 2>NUL
+# 	-if exist build_tmp rmdir /S /Q build_tmp
 clean:
-	-del /Q $(APP) $(TEST_BIN) 2>NUL
-	-del /Q *.o 2>NUL
-	-del /Q src\core\*.o src\io\*.o src\audio\*.o 2>NUL
-	-del /Q src\ui\*.o src\ui\canvas\*.o src\ui\toolbar\*.o 2>NUL
-	-del /Q src\ui\panels\*.o src\ui\dialogs\*.o 2>NUL
-	-del /Q src\components\*.o tests\*.o 2>NUL
-	-if exist build_tmp rmdir /S /Q build_tmp
+	rm -f schematic_win.exe run_tests.exe
+	rm -f *.o
+	rm -f src/core/*.o src/io/*.o src/audio/*.o
+	rm -f src/ui/*.o src/ui/canvas/*.o src/ui/toolbar/*.o
+	rm -f src/ui/panels/*.o src/ui/dialogs/*.o
+	rm -f src/components/*.o tests/*.o
+	rm -rf build_tmp
+
 else
 clean:
 	rm -f $(APP) $(TEST_BIN) *.o

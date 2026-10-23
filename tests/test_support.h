@@ -161,10 +161,17 @@ extern int test_current_section_failed; /* 1 kalau test-case ini ada fail */
     } \
 } while (0)
 
-/* ===================== State reset helper ===================== */
-/* Reset model + sim ke kondisi kosong. WAJIB dipanggil di awal setiap
-   test-case yang memanipulasi state global (comps, wires, junction,
-   selection, undo stack, dll) untuk mencegah bocoran antar test. */
-void test_reset_state(void);
+/* ============================================================================
+   Test-only hooks
+   
+   Didefinisikan di src/core/sim.c HANYA saat SCHEMATIC_TEST_STUBS
+   didefinisikan. Tidak ada di build produksi.
+   ============================================================================ */
+#ifdef SCHEMATIC_TEST_STUBS
+/* Reset state simulasi + panggil sim_recompute() untuk bersihkan state
+   internal (parent_, lit_, dll). Asumsi: test_reset_model() sudah dipanggil
+   sebelumnya. */
+void test_reset_sim(void);
+#endif
 
-#endif /* TEST_SUPPORT_H */
+#endif /* SIM_H */

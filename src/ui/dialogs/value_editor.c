@@ -175,7 +175,11 @@ void edit_value_dialog(HWND hwnd, Component *c) {
 
     const wchar_t *unit = comp_value_unit(c->type);
     wchar_t start[VALUE_STR_CAP];
-    format_value(c->v, unit, start, VALUE_STR_CAP);
+    /* Format HANYA angka + prefix SI (k/M/m/u/n/p), tanpa unit suffix.
+       Contoh: 5.1 (bukan "5.1 Vz"). Unit tetap tampil di hint label
+       di sebelah edit box. Ini memastikan round-trip:
+         format_value(v, NULL) → parse_value_text() → v  (selalu berhasil). */
+    format_value(c->v, NULL, start, VALUE_STR_CAP);
 
     wchar_t title[96];
     swprintf(title, 96, L"Edit Nilai Komponen — %s",

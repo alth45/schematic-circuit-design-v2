@@ -17,7 +17,8 @@
 
 /* --------------------------------------------- sim_empty_canvas */
 void test_sim_empty_canvas(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     sim_recompute();
 
     TEST_ASSERT_INT_EQ(comp_count, 0);
@@ -33,7 +34,8 @@ void test_sim_empty_canvas(void) {
 
 /* ----------------------------------------------- sim_run_guard */
 void test_sim_run_guard(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
 
     /* Canvas kosong → sim_set_running(1) harus ditolak. */
     sim_set_running(1);
@@ -50,7 +52,8 @@ void test_sim_run_guard(void) {
 
 /* -------------------------------------------- sim_led_series */
 void test_sim_led_series(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
 
     /* 1) Tambah 3 komponen, catat id. */
     model_add_component(COMP_BATTERY, 100, 100);

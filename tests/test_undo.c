@@ -7,7 +7,8 @@
 
 /* ------------------------------------------ undo_push + undo */
 void test_undo_push_undo(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     TEST_ASSERT_INT_EQ(comp_count, 0);
     TEST_ASSERT_INT_EQ(undo_can_undo(), 0);
     TEST_ASSERT_INT_EQ(undo_can_redo(), 0);
@@ -31,7 +32,8 @@ void test_undo_push_undo(void) {
 
 /* -------------------------------------------- undo_redo */
 void test_undo_redo(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     model_add_component(COMP_RESISTOR, 100, 100);
     model_add_component(COMP_LED, 300, 100);
     TEST_ASSERT_INT_EQ(comp_count, 2);
@@ -52,7 +54,8 @@ void test_undo_redo(void) {
 
 /* -------------------------------------------- undo_batch */
 void test_undo_batch(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     TEST_ASSERT_INT_EQ(comp_count, 0);
 
     undo_begin_batch();
@@ -72,7 +75,8 @@ void test_undo_batch(void) {
 
 /* -------------------------------------------- undo_reset */
 void test_undo_reset(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     model_add_component(COMP_RESISTOR, 100, 100);
     model_add_component(COMP_RESISTOR, 300, 100);
     TEST_ASSERT_INT_EQ(undo_can_undo(), 1);

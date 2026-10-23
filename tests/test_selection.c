@@ -7,7 +7,8 @@
 
 /* -------------------------------------------- add_to_selection */
 void test_add_to_selection(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     model_add_component(COMP_RESISTOR, 100, 100);
     int id1 = selected_id;
     model_add_component(COMP_RESISTOR, 300, 100);
@@ -37,7 +38,8 @@ void test_add_to_selection(void) {
 
 /* ------------------------------------------- toggle_selection */
 void test_toggle_selection(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     model_add_component(COMP_RESISTOR, 100, 100);
     int id1 = selected_id;
     model_add_component(COMP_RESISTOR, 300, 100);
@@ -61,7 +63,8 @@ void test_toggle_selection(void) {
 
 /* -------------------------------------------- clear_selection */
 void test_clear_selection(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     model_add_component(COMP_RESISTOR, 100, 100);
     add_to_selection(selected_id);
     add_to_selection(selected_id);
@@ -73,7 +76,8 @@ void test_clear_selection(void) {
 
 /* ----------------------------------------- model_select_rect */
 void test_model_select_rect(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     model_add_component(COMP_RESISTOR, 100, 100);
     int id1 = selected_id;
     model_add_component(COMP_RESISTOR, 300, 100);
@@ -102,7 +106,8 @@ void test_model_select_rect(void) {
 
 /* ------------------------------------- model_delete_selection */
 void test_model_delete_selection(void) {
-    test_reset_state();
+    test_reset_model();
+    test_reset_sim();
     model_add_component(COMP_RESISTOR, 100, 100);
     int id1 = selected_id;
     model_add_component(COMP_RESISTOR, 300, 100);

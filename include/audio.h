@@ -4,89 +4,30 @@
 /* ============================================================================
    audio.h — API publik modul AUDIO (playback nada buzzer).
 
-   Satu-satunya consumer yang dikenal: core/sim.c (memanggil
-   buzzer_audio_update di akhir sim_recompute) dan ui/window.c (memanggil
-   buzzer_audio_cleanup saat window destroy).
+   ATURAN KETAT:
+     * File ini HANYA berisi DEKLARASI (prototipe fungsi).
+     * Implementasi ada di:
+         - src/audio/buzzer_audio.c   (produksi, butuh <windows.h> + -lwinmm)
+         - tests/stubs_audio.c        (test build, semua no-op)
+     * JANGAN pernah menaruh body fungsi { ... } di header ini — akan
+       menyebabkan "redefinition" saat file .c implementasi ikut di-compile.
 
-   Aturan ketat:
+   Aturan include:
      * TIDAK BOLEH include <windows.h> atau <mmsystem.h>.
-     * Header ini murni deklarasi (void) → bisa di-include di mana saja.
+     * Header ini murni deklarasi void → bisa di-include di mana saja.
+   ============================================================================ */
 
-   Implementasi (audio/buzzer_audio.c) BOLEH include <windows.h> +
-   <mmsystem.h> — itu detail internal modul, tidak bocor ke header.
-
-   ============================================================================
-   STRATEGI STUB UNTUK UNIT TEST
-   ============================================================================
-
-   Build produksi:
-       src/audio/buzzer_audio.c  → link -lwinmm, memutar nada sungguhan.
-
-   Build test (SCHEMATIC_TEST_STUBS=1):
-       tests/stubs_audio.c       → implementasi kosong (no-op):
-           void buzzer_audio_update(void)  { /* no-op */ 
-void buzzer_audio_stop(void) { /* no-op */ }
-void buzzer_audio_cleanup(void) { /* no-op */ }
-
-/*Dengan begitu,
-    sim.c cukup link dengan stub dan TIDAK butuh -
-            lwinmm atau<mmsystem.h> saat test di Linux(maupun Windows)
-                .Makefile memilih stub otomatis saat target test.
-
-        == == == == == == == == == == == == == == == == == == == == == == == ==
-        == == == == == == == == == == == == == == KONTRAK SEMANTIK == == == ==
-        == == == == == == == == == == == == == == == == == == == == == == == ==
-        == == == == == == == == == ==
-
-        Nada =
-        sinus(bukan kotak) untuk mulus di loop boundary.Frekuensi mengikuti c
-        -> v(Hz) buzzer AKTIF PERTAMA di comps[](single channel — hanya satu
-                                                     buzzer yang boleh berbunyi
-                                                         pada satu waktu)
-            .
-
-        Fungsi idempoten — aman dipanggil berkali
-        - kali per detik : *buzzer_audio_update() hanya restart audio kalau
-    : -status berubah dari diam → berbunyi,
-        ATAU - frekuensi berubah >
-            0.5 Hz.Kalau sudah berbunyi di frekuensi yang sama,
-        no -
-            op.
-
-                Semua fungsi tahan NULL
-                / state kosong.Tidak ada error
-            - return;
-kegagalan PlaySound(mis.audio device busy) → diam saja,
-    tidak crash.== == == == == == == == == == == == == == == == == == == == ==
-        == == == == == == == == == == == == == == == == ==
-        */
-
-/* ============================================================================
-   BAGIAN 1 — Playback control (idempoten)
-   ============================================================================
- */
+#include "types.h"
 
 /* Putar / stop / restart nada sesuai state buzzer aktif saat ini.
-   Dipanggil dari sim_recompute() setiap kali state berubah (setelah
-   sim_running, switch, LDR, pot, nilai komponen berubah, dll).
-
-   Alur internal:
-     1. Cari buzzer aktif pertama: type == COMP_BUZZER &&
-   sim_buzzer_on(c).
-     2. Kalau tidak ada → stop (kalau sedang playing).
-     3. Kalau ada → hitung freq = clamp(c->v, 20..20000 Hz).
-     4. Restart hanya kalau status berubah atau |freq - g_cur_freq|
-   > 0.5. */
+   Idempoten — aman dipanggil berkali-kali per detik. */
 void buzzer_audio_update(void);
 
-/* Hentikan playback segera (idempoten). Reset state g_cur_freq ke 0.
-   Setelah ini, buzzer_audio_update() berikutnya akan restart dari nol
-   (dianggap "belum playing"). */
+/* Hentikan playback segera. Idempoten. */
 void buzzer_audio_stop(void);
 
-/* Bersihkan resource audio: panggil buzzer_audio_stop() + free buffer WAV
-   in-memory. WAJIB dipanggil saat window utama di-destroy (WM_DESTROY)
-   supaya tidak ada audio yang "nyangkut" setelah aplikasi ditutup. */
+/* Bersihkan resource audio: stop + free buffer WAV. Panggil saat
+   window utama di-destroy (WM_DESTROY). */
 void buzzer_audio_cleanup(void);
 
 #endif /* AUDIO_H */

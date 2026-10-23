@@ -1392,14 +1392,14 @@ double sim_probe_voltage(const Component *probe, double t) {
    ditangani sim_recompute(), lalu panggil sim_recompute() untuk
    membersihkan state internal. Asumsi: test sudah memanggil
    test_reset_model() terlebih dahulu (comp_count = 0, wire_count = 0). */
-// void test_reset_sim(void) {
-//     sim_running = 0;
-//     sim_short_x = -1;
-//     sim_short_y = -1;
-//     sim_short_comp_id = -1;
-//     sim_short_wire_idx = -1;
-//     _sim_probe_resp_ready = 0;
-//     sim_recompute();   /* reset semua state turunan (parent_, lit_, dll) */
-// }
-void test_reset_sim(void);
+void test_reset_sim(void) {
+    sim_running = 0;
+    sim_short_x = -1;
+    sim_short_y = -1;
+    sim_short_comp_id = -1;
+    sim_short_wire_idx = -1;
+    _sim_probe_resp_ready = 0;
+    sim_recompute();   /* reset semua state turunan (parent_, lit_, dll) */
+}
+// void test_reset_sim(void);
 #endif /* SCHEMATIC_TEST_STUBS */
