@@ -1,6 +1,22 @@
 ﻿{
+  "app": "schematic-c",
   "version": 1,
-  "name": "examples/gerbang-logika.json",
-  "components": [],
-  "wires": []
+  "components": [
+    {"id": 1, "type": "battery",  "x": 200,  "y": 400, "rot": 0, "on": 0, "wave": 0, "led_color": 0, "value": 9},
+    {"id": 2, "type": "switch",   "x": 400,  "y": 300, "rot": 0, "on": 1, "wave": 0, "led_color": 0, "value": 0},
+    {"id": 3, "type": "switch",   "x": 400,  "y": 500, "rot": 0, "on": 1, "wave": 0, "led_color": 0, "value": 0},
+    {"id": 4, "type": "and",      "x": 600,  "y": 400, "rot": 0, "on": 0, "wave": 0, "led_color": 0, "value": 0},
+    {"id": 5, "type": "resistor", "x": 800,  "y": 400, "rot": 0, "on": 0, "wave": 0, "led_color": 0, "value": 470},
+    {"id": 6, "type": "led",      "x": 1000, "y": 400, "rot": 0, "on": 0, "wave": 0, "led_color": 0, "value": 2.0}
+  ],
+  "junctions": [],
+  "wires": [
+    {"a": {"id": 1, "pin": 0}, "b": {"id": 2, "pin": 0}},
+    {"a": {"id": 3, "pin": 0}, "b": {"id": 1, "pin": 0}},
+    {"a": {"id": 2, "pin": 1}, "b": {"id": 4, "pin": 0}},
+    {"a": {"id": 3, "pin": 1}, "b": {"id": 4, "pin": 1}},
+    {"a": {"id": 4, "pin": 2}, "b": {"id": 5, "pin": 0}},
+    {"a": {"id": 5, "pin": 1}, "b": {"id": 6, "pin": 0}},
+    {"a": {"id": 6, "pin": 1}, "b": {"id": 1, "pin": 1}}
+  ]
 }

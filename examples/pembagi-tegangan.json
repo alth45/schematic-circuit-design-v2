@@ -1,6 +1,18 @@
 ﻿{
+  "app": "schematic-c",
   "version": 1,
-  "name": "examples/pembagi-tegangan.json",
-  "components": [],
-  "wires": []
+  "components": [
+    {"id": 1, "type": "battery",  "x": 100, "y": 400, "rot": 0, "on": 0, "wave": 0, "led_color": 0, "value": 12},
+    {"id": 2, "type": "resistor", "x": 250, "y": 300, "rot": 0, "on": 0, "wave": 0, "led_color": 0, "value": 10000},
+    {"id": 3, "type": "resistor", "x": 450, "y": 300, "rot": 0, "on": 0, "wave": 0, "led_color": 0, "value": 4700},
+    {"id": 4, "type": "voltmeter","x": 450, "y": 150, "rot": 0, "on": 0, "wave": 0, "led_color": 0, "value": 0}
+  ],
+  "junctions": [],
+  "wires": [
+    {"a": {"id": 1, "pin": 0}, "b": {"id": 2, "pin": 0}},
+    {"a": {"id": 2, "pin": 1}, "b": {"id": 3, "pin": 0}},
+    {"a": {"id": 4, "pin": 0}, "b": {"id": 3, "pin": 0}},
+    {"a": {"id": 4, "pin": 1}, "b": {"id": 3, "pin": 1}},
+    {"a": {"id": 1, "pin": 1}, "b": {"id": 3, "pin": 1}}
+  ]
 }

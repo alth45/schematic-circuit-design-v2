@@ -1,6 +1,15 @@
 ﻿{
+  "app": "schematic-c",
   "version": 1,
-  "name": "examples/led-sederhana.json",
-  "components": [],
-  "wires": []
+  "components": [
+    {"id": 1, "type": "battery",  "x": 300, "y": 300, "rot": 1, "on": 0, "wave": 0, "led_color": 0, "value": 9},
+    {"id": 2, "type": "resistor", "x": 100, "y": 200, "rot": 0, "on": 0, "wave": 0, "led_color": 0, "value": 470},
+    {"id": 3, "type": "led",      "x": 500, "y": 200, "rot": 0, "on": 0, "wave": 0, "led_color": 0, "value": 2.0}
+  ],
+  "junctions": [],
+  "wires": [
+    {"a": {"id": 1, "pin": 0}, "b": {"id": 2, "pin": 0}},
+    {"a": {"id": 2, "pin": 1}, "b": {"id": 3, "pin": 0}},
+    {"a": {"id": 1, "pin": 1}, "b": {"id": 3, "pin": 1}}
+  ]
 }
