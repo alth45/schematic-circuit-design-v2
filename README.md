@@ -115,7 +115,7 @@ schematic-editor/
 └── build.sh                     Wrapper POSIX (fallback tanpa make)
 ```
 
-*Detail arsitektur & dependency graph ada di*  [docs/ARCHITECTURE.md].
+*Detail arsitektur & dependency graph ada di*  [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Konsep Kunci: Pure Core vs UI Layer
 
