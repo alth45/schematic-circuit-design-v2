@@ -1,0 +1,121 @@
+﻿# ============================================================================
+#  .gitignore — Schematic Editor
+#
+#  Prinsip:
+#    * Abaikan semua hasil build di root (artefak berada di root src/, bukan
+#      per-folder).
+#    * Abaikan folder build external (CMake, VS Code, CLion, Xcode).
+#    * Abaikan file OS/IDE yang tidak relevan.
+#    * PENTING: JANGAN abaikan examples/*.json — itu contoh yang di-commit.
+# ============================================================================
+
+# --- Artefak build (root) ---
+/schematic_win.exe
+/schematic_win
+/run_tests.exe
+/run_tests
+*.o
+*.obj
+*.exe
+*.dll
+*.a
+*.lib
+*.exp
+*.pdb
+*.ilk
+
+# --- Build directories (CMake, out-of-tree) ---
+/build/
+/build-*/
+/build_tmp/
+/out/
+/cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Makefile.cmake
+cmake_install.cmake
+install_manifest.txt
+*.cmake
+!CMakeLists.txt
+!toolchain-*.cmake
+
+# --- Autotools (kalau nanti dipakai) ---
+.deps/
+*.lo
+*.la
+.libs/
+aclocal.m4
+autom4te.cache/
+config.log
+config.status
+configure
+Makefile.in
+
+# --- IDE — Visual Studio ---
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+Debug/
+Release/
+ipch/
+*.opensdf
+*.sdf
+*.suo
+
+# --- IDE — Visual Studio Code ---
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# --- IDE — CLion / IntelliJ ---
+.idea/
+*.iml
+*.iws
+
+# --- IDE — Xcode ---
+*.xcworkspace
+*.xcuserstate
+*.xcodeproj/
+
+# --- Editor misc ---
+*~
+*.swp
+*.swo
+.*.sw?
+.vim/
+
+# --- OS — Windows ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# --- OS — macOS ---
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# --- OS — Linux ---
+*~
+.directory
+.Trash-*
+
+# --- Logs / cache ---
+*.log
+.cache/
+*.tmp
+tmp/
+
+# --- User lokal (tidak di-commit) ---
+.private/
+scratch/
+local_notes/
+*.code-workspace
